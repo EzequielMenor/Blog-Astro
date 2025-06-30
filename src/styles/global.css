@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@theme{
+   --font-sans: "Inter", sans-serif;
+   --font-serif: "Lora", serif;
+}
+
+body {
+   font-family: var(--font-sans);
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+   font-family: var(--font-sans);
+}
+
+.prose {
+   font-family: var(--font-serif);
+}
