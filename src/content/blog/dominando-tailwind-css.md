@@ -2,7 +2,6 @@
 title: Dominando Tailwind CSS para un Diseño Eficiente
 pubDate: 2025-06-20T09:30:00.000Z
 author: Ezequiel Menor
-image: /public/letra-e.png
 description: Una guía práctica para sacarle el máximo partido a las utilidades de Tailwind CSS.
 tags: ['Tailwind CSS', 'CSS', 'Diseño Web', 'Front-end']
 ---
