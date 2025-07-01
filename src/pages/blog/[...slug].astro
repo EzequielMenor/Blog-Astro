@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content'; // Asegúrate de importar getEntry
 import Layout from '../../layouts/Layout.astro'; // Ajusta la ruta a tu Layout si es diferente
 
 export async function getStaticPaths() {
@@ -7,16 +7,29 @@ export async function getStaticPaths() {
 
 	return blogEntries.map((entry) => {
 		return {
-			params: { slug: entry.slug.split('/') },
+			// Para un catch-all route ([...slug]), params.slug DEBE ser un ARRAY de segmentos.
+			// La forma más simple es usar el slug de la entrada directamente, envuelto en un array.
+			// Si entry.slug es "mi-primer-post", params.slug será ["mi-primer-post"].
+			// Si entry.slug fuera "categoria/mi-post", params.slug será ["categoria", "mi-post"].
+			params: { slug: entry.slug.split('/') }, // <-- Mantenemos este, es el correcto para `[...slug]`
+			// No necesitamos pasar 'entry' en props aquí, lo buscaremos de nuevo en el componente.
 		};
 	});
 }
 
+// Obtener los parámetros de la URL (Astro.params)
 const { slug } = Astro.params;
+
+// Reconstruir el slug en una cadena simple para getEntry
+// Si Astro.params.slug es ['mi-primer-post'], slugToFind será 'mi-primer-post'.
+// Si Astro.params.slug es ['categoria', 'mi-post'], slugToFind será 'categoria/mi-post'.
 const slugToFind = Array.isArray(slug) ? slug.join('/') : slug;
 
+// ¡Buscar la entrada del blog usando el slug reconstruido!
+// getEntry() espera el "collection", y el "slug" (que es el ID de la entrada).
 const entry = await getEntry('blog', slugToFind);
 
+// Si el post no se encuentra, devolvemos una respuesta 404.
 if (!entry) {
 	return new Response('Post no encontrado.', {
 		status: 404,
@@ -26,6 +39,7 @@ if (!entry) {
 	});
 }
 
+// Renderizar el contenido Markdown del post
 const { Content } = await entry.render();
 ---
 

@@ -14,11 +14,22 @@ function slugify(text) {
 		.replace(/-+$/, ''); // Elimina guiones al final
 }
 
-// Obtener la ruta del directorio del proyecto (importante para guardar archivos)
-// Esto navega desde src/pages/api/ hacia la raíz del proyecto.
+// Obtener la ruta del directorio del proyecto de forma más robusta
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '../../../'); // Subir 3 niveles para llegar a la raíz
+
+// Ajuste para calcular projectRoot
+// En desarrollo, __dirname es src/pages/api/. Subir 3 niveles.
+// En build, __dirname puede ser algo como dist/server/. Necesitamos una ruta relativa al directorio de los posts.
+
+// Una forma más segura de obtener la ruta absoluta a la raíz del proyecto
+// (funciona tanto en dev como en build si el script está en dist/server/)
+// process.cwd() obtiene el directorio de trabajo actual (donde ejecutas `node ./dist/server/entry.mjs`)
+const projectRoot = process.cwd();
+
+// Construye la ruta al directorio de posts a partir de la raíz del proyecto.
+// Esto asume que src/content/blog siempre estará relativo a la raíz del proyecto,
+// incluso cuando el servidor buildado se ejecute desde 'dist'.
 const postsDirectory = path.join(projectRoot, 'src', 'content', 'blog');
 
 export async function POST({ request }) {
@@ -36,7 +47,6 @@ export async function POST({ request }) {
 
 		const slug = slugify(title); // Genera un slug para el nombre del archivo
 		const pubDate = new Date().toISOString(); // Fecha y hora actual en formato ISO 8601
-		pubDate: '${pubDate}';
 
 		const frontmatter = `---
 title: "${title.replace(/"/g, '\\"')}"
@@ -53,10 +63,10 @@ ${body}
 		const filename = `${slug}.md`; // Nombre del archivo Markdown
 		const filePath = path.join(postsDirectory, filename); // Ruta completa donde se guardará
 
-		// Crea la carpeta de posts si no existe
+		// Asegúrate de que el directorio exista. `recursive: true` creará padres si es necesario.
 		await fs.mkdir(postsDirectory, { recursive: true });
 
-		//Escribe el archivo en markdown
+		// Escribe el archivo en markdown
 		await fs.writeFile(filePath, frontmatter, 'utf-8');
 
 		// Responde con un mensaje de éxito y el slug del nuevo post

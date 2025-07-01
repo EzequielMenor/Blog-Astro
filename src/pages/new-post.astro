@@ -125,6 +125,9 @@ import Layout from '../layouts/Layout.astro';
 			if (response.ok) {
 				messageElement.textContent = result.message + ' Redirigiendo...';
 				messageElement.className = 'text-green-600 text-sm font-medium';
+				setTimeout(() => {
+					window.location.href = '/post-creado';
+				}, 2000);
 			} else {
 				messageElement.textContent = 'Error: ' + (result.message || 'No se pudo crear el post');
 				messageElement.className = 'text-red-600 text-sm font-medium';

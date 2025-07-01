@@ -16,7 +16,7 @@ const sortedPosts = allBlogPosts.sort((a, b) => b.data.pubDate.getTime() - a.dat
 		{
 			sortedPosts.map((post) => (
 				<article class='bg-white rounded-lg shadow-md overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300'>
-					{post.data.image && <img src={post.data.image} alt={post.data.title} class='w-full h-48 object-cover' />}
+					{post.data.heroImage && <img src={post.data.heroImage} alt={post.data.title} class='w-full h-48 object-cover' />}
 					<div class='p-6 flex-grow'>
 						<h2 class='text-2xl font-bold text-indigo-700 mb-2 leading-tight'>
 							<a href={`/blog/${post.slug}`} class='hover:text-indigo-900 transition-colors duration-200'>
