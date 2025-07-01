@@ -36,6 +36,7 @@ export async function POST({ request }) {
 
 		const slug = slugify(title); // Genera un slug para el nombre del archivo
 		const pubDate = new Date().toISOString(); // Fecha y hora actual en formato ISO 8601
+		pubDate: '${pubDate}';
 
 		const frontmatter = `---
 title: "${title.replace(/"/g, '\\"')}"

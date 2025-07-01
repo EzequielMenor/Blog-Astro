@@ -1,6 +1,6 @@
 ---
 title: Mi primera publicación
-pubDate: 2025-06-25t10:00:00.000Z
+pubDate: '2025-06-25t10:00:00.000Z'
 author: Ezequiel Menor
 description: Esta es mi primera publicación en el blog. Estoy emocionado de compartir mis pensamientos y experiencias con todos ustedes.
 tags: ['Introducción', 'Primera Publicación']

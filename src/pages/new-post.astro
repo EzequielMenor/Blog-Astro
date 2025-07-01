@@ -32,7 +32,7 @@ import Layout from '../layouts/Layout.astro';
 			<div class='mb-6'>
 				<label for='description' class='block text-gray-700 text-sm font-bold mb-2'>Descripción: </label>
 				<textarea
-					name='author'
+					name='description'
 					id='description'
 					rows='3'
 					required
@@ -63,7 +63,7 @@ import Layout from '../layouts/Layout.astro';
 			</div>
 
 			<div class='mb-6'>
-				<label for='body' class='block text-gray-700 text-sm font-bold mb-2'>Contenido: </label>
+				<label for='body' class='block text-gray-700 text-sm font-bold mb-2'>Contenido del Post (Markdown): </label>
 				<textarea
 					name='body'
 					id='body'
@@ -86,8 +86,6 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script is:inline>
-	import { Result } from 'postcss';
-
 	document.getElementById('newPostForm').addEventListener('submit', async function (event) {
 		//Evita el envío tradicional del formulario
 		event.preventDefault();
@@ -104,14 +102,17 @@ import Layout from '../layouts/Layout.astro';
 
 		// Dividir las etiquetas por comas y limpiarlas
 		if (data.tags) {
-			data.tags = data.tags.split(',').map((tag) => tag.trim().filter((tag) => tag.length > 0));
+			data.tags = data.tags
+				.split(',')
+				.map((tag) => tag.trim()) // Primero, mapea y recorta cada etiqueta
+				.filter((tag) => tag.length > 0); // Luego, filtra las vacías del array
 		} else {
 			data.tags = [];
 		}
 
 		try {
 			//Para enviar los datos al endpoint de API de Astro
-			const response = await fetch('/api/posts', {
+			const response = await fetch('/api/create-post', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -119,11 +120,13 @@ import Layout from '../layouts/Layout.astro';
 				body: JSON.stringify(data),
 			});
 
+			const result = await response.json();
+
 			if (response.ok) {
-				messageElement.textContent = Result.message + ' Redirigiendo...';
+				messageElement.textContent = result.message + ' Redirigiendo...';
 				messageElement.className = 'text-green-600 text-sm font-medium';
 			} else {
-				messageElement.textContent = 'Error: ' + (Result.message || 'No se pudo crear el post');
+				messageElement.textContent = 'Error: ' + (result.message || 'No se pudo crear el post');
 				messageElement.className = 'text-red-600 text-sm font-medium';
 			}
 		} catch (error) {
